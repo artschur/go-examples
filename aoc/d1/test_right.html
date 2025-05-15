@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embarque</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        margin: 0;
+        background: radial-gradient(ellipse farthest-corner at center top, #07a5a1, #002b4a);
+        color: #363c44;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /*--------------------
+Boarding Pass
+--------------------*/
+      .boarding-pass {
+        width: 350px;
+        height: 382px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        text-transform: uppercase;
+
+        small {
+          display: block;
+          font-size: 11px;
+          color: #a2a9b3;
+          margin-bottom: 2px;
+        }
+
+        strong {
+          font-size: 15px;
+          display: block;
+        }
+
+        /*--------------------
+  Header
+  --------------------*/
+        & header {
+          background: linear-gradient(to bottom, #36475f, #2c394f);
+          padding: 12px 20px;
+          height: 53px;
+
+          .logo {
+            float: left;
+            width: 104px;
+            height: 31px;
+          }
+
+          .flight {
+            float: right;
+            color: #fff;
+            text-align: right;
+
+            small {
+              font-size: 8px;
+              margin-bottom: 2px;
+              opacity: 0.8;
+            }
+
+            strong {
+              font-size: 18px;
+            }
+          }
+        }
+
+        /*--------------------
+  Cities
+  --------------------*/
+        .cities {
+          position: relative;
+
+          &::after {
+            content: '';
+            display: table;
+            clear: both;
+          }
+
+          .city {
+            padding: 20px 18px;
+            float: left;
+
+            &:nth-child(2) {
+              float: right;
+            }
+
+            strong {
+              font-size: 40px;
+              font-weight: 300;
+              line-height: 1;
+            }
+
+            small {
+              margin-bottom: 0px;
+              margin-left: 3px;
+            }
+          }
+
+          .airplane {
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            top: 57%;
+            left: 30%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            animation: move 4s infinite;
+          }
+
+          @keyframes move {
+            40% {
+              left: 50%;
+              opacity: 1;
+            }
+            100% {
+              left: 70%;
+              opacity: 0;
+            }
+          }
+        }
+
+        /*--------------------
+  Infos
+  --------------------*/
+        .infos {
+          display: flex;
+          border-top: 1px solid #99d298;
+
+          .places,
+          .times {
+            width: 50%;
+            padding: 10px 0;
+
+            &::after {
+              content: '';
+              display: table;
+              clear: both;
+            }
+          }
+
+          .times {
+            strong {
+              transform: scale(0.9);
+              transform-origin: left bottom;
+            }
+          }
+
+          .places {
+            background: #e2efe2;
+            border-right: 1px solid #99d298;
+
+            small {
+              color: #97a1ad;
+            }
+
+            strong {
+              color: #239422;
+            }
+          }
+
+          .box {
+            padding: 10px 20px 10px;
+            width: 47%;
+            float: left;
+
+            small {
+              font-size: 10px;
+            }
+          }
+        }
+
+        /* Estilos para o avião */
+        .airplane {
+          position: absolute;
+          width: 30px;
+          height: 25px;
+          top: calc(50% - 12.5px); /* Metade da altura */
+          left: -30px; /* Inicia fora do cartão */
+          opacity: 0; /* Inicia invisível */
+          animation: moveAirplane 4s infinite;
+        }
+
+        @keyframes moveAirplane {
+          0% {
+            left: -30px; /* Inicia fora do cartão */
+            opacity: 0; /* Inicia invisível */
+          }
+          20%,
+          80% {
+            left: calc(50% - 15px); /* Meio do cartão */
+            opacity: 1; /* Torna visível */
+          }
+          100% {
+            left: 100%; /* Sai completamente à direita */
+            opacity: 0; /* Torna invisível */
+          }
+        }
+
+        /*--------------------
+  Strap
+  --------------------*/
+        .strap {
+          clear: both;
+          position: relative;
+          border-top: 1px solid #99d298;
+
+          &::after {
+            content: '';
+            display: table;
+            clear: both;
+          }
+
+          .box {
+            padding: 23px 0 20px 20px;
+
+            & div {
+              margin-bottom: 15px;
+
+              small {
+                font-size: 10px;
+              }
+
+              strong {
+                font-size: 13px;
+              }
+            }
+
+            sup {
+              font-size: 8px;
+              position: relative;
+              top: -5px;
+            }
+          }
+          .qrcode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    %%[ var @full_name, @email, @phone_number, @state, @partner_id, @updated_at set @full_name =
+    RequestParameter("full_name") set @email = RequestParameter("email") set @phone_number =
+    RequestParameter("phone_number") set @state = RequestParameter("state") set @promoter =
+    RequestParameter("partner_id") set @origin = "form_parceiros" set @campaign = "indicacao" set
+    @updated_at = Now() ]%%
+
+    <h1 style="color: #f2f2f2">Seu cartão de embarque está garantido</h1>
+    <div class="boarding-pass">
+      <header>
+        <div class="logo">
+          <img
+            src="https://costaoestaleirinho.com.br/wp-content/webp-express/webp-images/uploads/2024/04/logo.png.webp"
+            width="100px"
+          />
+        </div>
+        <div class="flight">
+          <small>flight</small>
+          <strong>CE 790</strong>
+        </div>
+      </header>
+      <section class="cities">
+        <div class="city">
+          <small>Casa</small>
+
+          <strong>ON</strong>
+        </div>
+        <div class="city">
+          <small>Estaleirinho</small>
+
+          <strong>BC</strong>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-around">
+          <img
+            style="position: absolute; margin-top: 10px"
+            src="https://image.crm.costao.com.br/lib/fe3611747364047c761072/m/1/123b18e9-7685-4a3c-8580-d65e215653e7.png"
+            width="100px"
+          />
+        </div>
+      </section>
+      <section class="infos">
+        <div class="places">
+          <div class="box">
+            <small>Terminal</small>
+            <strong><em>W</em></strong>
+          </div>
+          <div class="box">
+            <small>Gate</small>
+            <strong><em>C3</em></strong>
+          </div>
+          <div class="box">
+            <small>Seat</small>
+            <strong>14B</strong>
+          </div>
+          <div class="box">
+            <small>Class</small>
+            <strong>E</strong>
+          </div>
+        </div>
+        <div class="times">
+          <div class="box">
+            <small>Boarding</small>
+            <strong>19:50</strong>
+          </div>
+          <div class="box">
+            <small>Departure</small>
+            <strong>20:20</strong>
+          </div>
+          <div class="box">
+            <small>Duration</small>
+            <strong>01:10</strong>
+          </div>
+          <div class="box">
+            <small>Arrival</small>
+            <strong>21:30</strong>
+          </div>
+        </div>
+      </section>
+      <section class="strap">
+        <div class="box">
+          <div class="passenger">
+            <small>passenger</small>
+            <strong id="passenger-name">%%=v(@full_name)=%%</strong>
+          </div>
+          <div class="date">
+            <small>Date</small>
+            <strong id="today-date">Tue, 15 march 2016</strong>
+          </div>
+        </div>
+        <div class="qrcode">
+          <img
+            width="80px"
+            src="https://image.crm.costao.com.br/lib/fe3611747364047c761072/m/1/bc0ad463-4194-420f-b230-e0089b922ffc.png"
+          />
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const todayDateElement = document.getElementById('today-date');
+        const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date().toLocaleDateString('en-US', options);
+        todayDateElement.textContent = today;
+      });
+    </script>
+
+    <script>
+      var mail = '%%=v(@email)=%%';
+      mail = mail.toString();
+
+      var data = {
+        event: 'formSubmit',
+        value: mail,
+      };
+
+      window.parent.postMessage(data, '*');
+    </script>
+    <script runat="server">
+      Platform.Load('Core', '1');
+
+      var data = {
+        email: Variable.GetValue('@email'),
+        full_name: Variable.GetValue('@full_name'),
+        phone_number: Variable.GetValue('@phone_number'),
+        state: Variable.GetValue('@state'),
+        promoter: Variable.GetValue('@promoter'),
+        campaign: Variable.GetValue('@campaign'),
+        origin: Variable.GetValue('@origin'),
+        updated_at: Variable.GetValue('@updated_at'),
+      };
+
+      var setup = {
+        authBaseURI: 'https://mc4y-hrsmkg14bdcm7vwjbftjvh0.auth.marketingcloudapis.com/',
+        restBaseURI: 'https://mc4y-hrsmkg14bdcm7vwjbftjvh0.rest.marketingcloudapis.com/',
+        clientId: '4hmbwvsbpfle0zr0z91jap0o',
+        clientSecret: 'uk7IhItuFMghvPm2M23EjBXg',
+        eventDefinitionKey: 'COLOCAR_EVENTO_AQUI',
+      };
+
+      try {
+        var token = getToken(setup);
+        var success = false;
+        if (!!token) success = triggerEvent(token, setup, data);
+        var rows = Platform.Function.UpsertData(
+          'leads_costaoestaleirinho_captacao',
+          ['email'],
+          [data.email],
+          [
+            'full_name',
+            'phone_number',
+            'state',
+            'city',
+            'occupation',
+            'marital_status',
+            'travel_companions',
+            'budget',
+            'know_multiproperty',
+            'has_fractions',
+            'dream_vacation',
+            'dream_vacation',
+            'know_destination',
+            'promoter',
+            'campaign',
+            'origin',
+            'updated_at',
+          ],
+          [
+            data.full_name,
+            data.phone_number,
+            data.state,
+            data.city,
+            data.occupation,
+            data.marital_status,
+            data.travel_companions,
+            data.budget,
+            data.know_multiproperty,
+            data.has_fractions,
+            data.dream_vacation,
+            data.dream_vacation,
+            data.know_destination,
+            data.promoter,
+            data.campaign,
+            data.origin,
+            data.updated_at,
+          ],
+        );
+      } catch (err) {
+        var rows = Platform.Function.UpsertData(
+          'leads_costaoestaleirinho_captacao',
+          ['email'],
+          [data.email],
+          [
+            'full_name',
+            'phone_number',
+            'state',
+            'city',
+            'occupation',
+            'marital_status',
+            'travel_companions',
+            'budget',
+            'know_multiproperty',
+            'has_fractions',
+            'dream_vacation',
+            'dream_vacation',
+            'know_destination',
+            'promoter',
+            'campaign',
+            'origin',
+            'updated_at',
+          ],
+          [
+            data.full_name,
+            data.phone_number,
+            data.state,
+            data.city,
+            data.occupation,
+            data.marital_status,
+            data.travel_companions,
+            data.budget,
+            data.know_multiproperty,
+            data.has_fractions,
+            data.dream_vacation,
+            data.dream_vacation,
+            data.know_destination,
+            data.promoter,
+            data.campaign,
+            data.origin,
+            data.updated_at,
+          ],
+        );
+      }
+
+      function getToken(setup) {
+        var config = {
+          url: setup.authBaseURI + 'v2/token',
+          contentType: 'application/json',
+          payload: {
+            client_id: setup.clientId,
+            client_secret: setup.clientSecret,
+            grant_type: 'client_credentials',
+          },
+        };
+
+        var req = HTTP.Post(config.url, config.contentType, Stringify(config.payload));
+
+        if (req.StatusCode == 200) {
+          var res = Platform.Function.ParseJSON(req.Response[0]);
+          return res.access_token;
+        } else {
+          return false;
+        }
+      }
+
+      function triggerEvent(token, setup, data) {
+        var config = {
+          url: setup.restBaseURI + 'interaction/v1/events',
+          contentType: 'application/json',
+          headerNames: ['Authorization'],
+          headerValues: ['Bearer ' + token],
+          payload: {
+            ContactKey: data.email,
+            EventDefinitionKey: setup.eventDefinitionKey,
+            Data: data,
+          },
+        };
+
+        try {
+          var req = HTTP.Post(
+            config.url,
+            config.contentType,
+            Stringify(config.payload),
+            config.headerNames,
+            config.headerValues,
+          );
+          if (req.StatusCode == 201) {
+            var res = Platform.Function.ParseJSON(req.Response.toString());
+            if (res.eventInstanceId && res.eventInstanceId !== '') {
+              return true;
+            }
+          } else {
+            // Handle non-201 status codes or errors
+            return false;
+          }
+        } catch (ex) {
+          return false;
+        }
+      }
+    </script>
+  </body>
+</html>
