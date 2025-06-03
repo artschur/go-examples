@@ -1,4 +1,4 @@
-package d3
+package d4
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 )
 
 func parseInput() (rules map[int][]int, updates [][]int) {
-	f, err := os.Open("/Users/aschur/Desktop/examples/aoc/d3/d3.input")
+	f, err := os.Open("/Users/aschur/Desktop/examples/aoc/d4/d4.input")
 	if err != nil {
 		panic(err)
 	}
